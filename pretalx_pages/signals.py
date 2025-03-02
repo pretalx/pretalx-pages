@@ -49,9 +49,13 @@ def pretalx_activitylog_display(sender, activitylog, **kwargs):
 @receiver(signal=activitylog_object_link)
 def pretalx_activitylog_object_link(sender, activitylog, **kwargs):
     if isinstance(activitylog.content_object, Page):
+        url = build_absolute_uri(
+            "plugins:pretalx_pages:show",
+            kwargs={"event": sender.slug, "slug": activitylog.content_object.slug},
+        )
         return (
             _("Page")
-            + f' <a href="{activitylog.content_object.urls.public}">{escape(activitylog.content_object.title)}</a>'
+            + f' <a href="{url}">{escape(activitylog.content_object.title)}</a>'
         )
         return activitylog.content_object.title
 
