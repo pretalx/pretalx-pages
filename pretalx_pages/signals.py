@@ -57,7 +57,6 @@ def pretalx_activitylog_object_link(sender, activitylog, **kwargs):
             _("Page")
             + f' <a href="{url}">{escape(activitylog.content_object.title)}</a>'
         )
-        return activitylog.content_object.title
 
 
 @receiver(footer_link, dispatch_uid="pages_footer_links")
