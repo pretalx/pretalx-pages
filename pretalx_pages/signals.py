@@ -12,7 +12,7 @@ from .models import Page
 
 @receiver(nav_event)
 def show_pages_to_orgnisers(sender, request=None, **kwargs):
-    if not request.user.has_perm("orga.change_settings", request.event):
+    if not request.user.has_perm("event.update_event", request.event):
         return []
     url = f"/orga/event/{request.event.slug}/pages/"
     return [

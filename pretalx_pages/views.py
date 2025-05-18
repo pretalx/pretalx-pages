@@ -53,7 +53,7 @@ class PageList(EventPermissionRequired, ListView):
     context_object_name = "pages"
     paginate_by = 20
     template_name = "pretalx_pages/index.html"
-    permission_required = "orga.change_settings"
+    permission_required = "event.update_event"
 
     def get_queryset(self):
         return Page.objects.filter(event=self.request.event)
@@ -66,7 +66,7 @@ def page_move(request, page, up=True):
     It takes a page and a direction and then tries to bring all pages
     for this event in a new order.
     """
-    if not request.user.has_perm("orga.change_settings", request.event):
+    if not request.user.has_perm("event.update_event", request.event):
         raise Http404(_("The requested page does not exist."))
 
     try:
@@ -153,7 +153,7 @@ class PageDelete(EventPermissionRequired, PageDetailMixin, DeleteView):
     form_class = PageForm
     template_name = "pretalx_pages/delete.html"
     context_object_name = "page"
-    permission_required = "orga.change_settings"
+    permission_required = "event.update_event"
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -178,7 +178,7 @@ class PageUpdate(EventPermissionRequired, PageDetailMixin, PageEditorMixin, Upda
     form_class = PageEditForm
     template_name = "pretalx_pages/form.html"
     context_object_name = "page"
-    permission_required = "orga.change_settings"
+    permission_required = "event.update_event"
 
     def get_success_url(self) -> str:
         return reverse(
@@ -209,7 +209,7 @@ class PageCreate(EventPermissionRequired, PageEditorMixin, CreateView):
     model = Page
     form_class = PageForm
     template_name = "pretalx_pages/form.html"
-    permission_required = "orga.change_settings"
+    permission_required = "event.update_event"
 
     def get_success_url(self) -> str:
         return reverse(

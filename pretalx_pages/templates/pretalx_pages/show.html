@@ -2,7 +2,7 @@
 {% load rules %}
 
 {% block nav_link %}
-    {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}
+    {% has_perm 'schedule.list_schedule' request.user request.event as can_view_schedule %}
     {% if can_view_schedule %}
         {{ request.event.urls.schedule }}
     {% else %}
