@@ -242,7 +242,7 @@ class PageCreate(EventPermissionRequired, PageEditorMixin, CreateView):
         return super().form_invalid(form)
 
 
-@method_decorator(csp_update(IMG_SRC="*"), name="dispatch")
+@method_decorator(csp_update({"img-src": "*"}), name="dispatch")
 class ShowPageView(TemplateView):
     template_name = "pretalx_pages/show.html"
 
