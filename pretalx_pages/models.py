@@ -35,5 +35,7 @@ class Page(LogMixin, models.Model):
         default=False, verbose_name=_("Show link in the event footer")
     )
 
+    log_prefix = "pretalx_pages.page"
+
     class Meta:
         ordering = ["position", "title"]
