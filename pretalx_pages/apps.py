@@ -17,6 +17,9 @@ class PluginApp(AppConfig):
         visible = True
         version = __version__
         category = "FEATURE"
+        navigation_links = [
+            (gettext_lazy("Pages"), "plugins:pretalx_pages:index", {}),
+        ]
 
     def ready(self):
         from . import signals  # NOQA
