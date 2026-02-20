@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy
-
 from pretalx_pages import __version__
 
 
@@ -17,9 +16,12 @@ class PluginApp(AppConfig):
         visible = True
         version = __version__
         category = "FEATURE"
+        settings_links = [
+            (gettext_lazy("Pages"), "plugins:pretalx_pages:index", {}),
+        ]
         navigation_links = [
             (gettext_lazy("Pages"), "plugins:pretalx_pages:index", {}),
         ]
 
     def ready(self):
-        from . import signals  # NOQA
+        from . import signals  # noqa: F401, PLC0415

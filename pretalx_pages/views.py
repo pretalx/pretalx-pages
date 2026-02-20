@@ -19,6 +19,7 @@ from django.views.generic import (
     UpdateView,
 )
 from i18nfield.forms import I18nModelForm
+
 from pretalx.common.templatetags import rich_text
 from pretalx.common.views.mixins import EventPermissionRequired
 
@@ -41,8 +42,10 @@ CLEANER = bleach.Cleaner(
             parse_email=True,
             email_re=rich_text.EMAIL_REGEX,
             skip_tags={"pre", "code"},
-            callbacks=bleach.linkifier.DEFAULT_CALLBACKS
-            + [rich_text.safelink_callback],
+            callbacks=[
+                *bleach.linkifier.DEFAULT_CALLBACKS,
+                rich_text.safelink_callback,
+            ],
         )
     ],
 )
@@ -71,8 +74,8 @@ def page_move(request, page, up=True):
 
     try:
         page = request.event.pages.get(slug__iexact=page)
-    except Page.DoesNotExist:
-        raise Http404(_("The requested page does not exist."))
+    except Page.DoesNotExist as e:
+        raise Http404(_("The requested page does not exist.")) from e
     pages = list(request.event.pages.order_by("position", "title"))
 
     index = pages.index(page)
@@ -136,8 +139,8 @@ class PageDetailMixin:
             return Page.objects.get(
                 event=self.request.event, slug__iexact=self.kwargs["page"]
             )
-        except Page.DoesNotExist:
-            raise Http404(_("The requested page does not exist."))
+        except Page.DoesNotExist as e:
+            raise Http404(_("The requested page does not exist.")) from e
 
     def get_success_url(self) -> str:
         return reverse(
@@ -251,8 +254,8 @@ class ShowPageView(TemplateView):
             return Page.objects.get(
                 event=self.request.event, slug__iexact=self.kwargs["slug"]
             )
-        except Page.DoesNotExist:
-            raise Http404(_("The requested page does not exist."))
+        except Page.DoesNotExist as e:
+            raise Http404(_("The requested page does not exist.")) from e
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()

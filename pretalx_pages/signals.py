@@ -2,6 +2,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
+
 from pretalx.cfp.signals import footer_link
 from pretalx.common.signals import activitylog_display, activitylog_object_link
 from pretalx.common.urls import build_absolute_uri
