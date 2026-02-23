@@ -109,19 +109,13 @@ class PageForm(I18nModelForm):
 
     class Meta:
         model = Page
-        fields = (
-            "title",
-            "slug",
-            "text",
-            "link_in_footer",
-        )
+        fields = ("title", "slug", "text", "link_in_footer")
 
     def clean_slug(self):
         slug = self.cleaned_data["slug"]
         if Page.objects.filter(slug__iexact=slug, event=self.event).exists():
             raise forms.ValidationError(
-                _("You already have a page on that URL."),
-                code="duplicate_slug",
+                _("You already have a page on that URL."), code="duplicate_slug"
             )
         return slug
 
@@ -144,10 +138,7 @@ class PageDetailMixin:
 
     def get_success_url(self) -> str:
         return reverse(
-            "plugins:pretalx_pages:index",
-            kwargs={
-                "event": self.request.event.slug,
-            },
+            "plugins:pretalx_pages:index", kwargs={"event": self.request.event.slug}
         )
 
 
@@ -216,10 +207,7 @@ class PageCreate(EventPermissionRequired, PageEditorMixin, CreateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "plugins:pretalx_pages:index",
-            kwargs={
-                "event": self.request.event.slug,
-            },
+            "plugins:pretalx_pages:index", kwargs={"event": self.request.event.slug}
         )
 
     @transaction.atomic

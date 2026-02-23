@@ -40,3 +40,6 @@ class Page(LogMixin, models.Model):
 
     class Meta:
         ordering = ["position", "title"]
+
+    def __str__(self):
+        return f"Page(event={self.event}, slug={self.slug})"

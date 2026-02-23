@@ -11,9 +11,7 @@ import pretalx.common.models.mixins
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
-        ("event", "0022_auto_20200124_1213"),
-    ]
+    dependencies = [("event", "0022_auto_20200124_1213")]
 
     operations = [
         migrations.CreateModel(
@@ -51,9 +49,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={
-                "ordering": ["position", "title"],
-            },
+            options={"ordering": ["position", "title"]},
             bases=(pretalx.common.models.mixins.LogMixin, models.Model),
-        ),
+        )
     ]

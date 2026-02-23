@@ -15,7 +15,7 @@ from pretalx_pages.signals import (
 @pytest.mark.django_db
 def test_orga_can_list_pages(orga_client, event):
     response = orga_client.get(
-        reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug}),
+        reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug})
     )
     assert response.status_code == 200
 
@@ -23,7 +23,7 @@ def test_orga_can_list_pages(orga_client, event):
 @pytest.mark.django_db
 def test_orga_can_list_pages_with_pages(orga_client, event, page):
     response = orga_client.get(
-        reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug}),
+        reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug})
     )
     assert response.status_code == 200
     assert page.title in response.content.decode()
@@ -32,7 +32,7 @@ def test_orga_can_list_pages_with_pages(orga_client, event, page):
 @pytest.mark.django_db
 def test_reviewer_cannot_list_pages(review_client, event):
     response = review_client.get(
-        reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug}),
+        reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug})
     )
     assert response.status_code == 404
 
@@ -40,7 +40,7 @@ def test_reviewer_cannot_list_pages(review_client, event):
 @pytest.mark.django_db
 def test_orga_can_create_page(orga_client, event):
     response = orga_client.get(
-        reverse("plugins:pretalx_pages:create", kwargs={"event": event.slug}),
+        reverse("plugins:pretalx_pages:create", kwargs={"event": event.slug})
     )
     assert response.status_code == 200
 
@@ -68,7 +68,7 @@ def test_orga_can_edit_page(orga_client, event, page):
         reverse(
             "plugins:pretalx_pages:edit",
             kwargs={"event": event.slug, "page": page.slug},
-        ),
+        )
     )
     assert response.status_code == 200
 
@@ -97,7 +97,7 @@ def test_orga_can_delete_page(orga_client, event, page):
         reverse(
             "plugins:pretalx_pages:delete",
             kwargs={"event": event.slug, "page": page.slug},
-        ),
+        )
     )
     assert response.status_code == 200
 
@@ -116,7 +116,7 @@ def test_orga_can_delete_page(orga_client, event, page):
 @pytest.mark.django_db
 def test_reviewer_cannot_create_page(review_client, event):
     response = review_client.get(
-        reverse("plugins:pretalx_pages:create", kwargs={"event": event.slug}),
+        reverse("plugins:pretalx_pages:create", kwargs={"event": event.slug})
     )
     assert response.status_code == 404
 
@@ -127,7 +127,7 @@ def test_reviewer_cannot_edit_page(review_client, event, page):
         reverse(
             "plugins:pretalx_pages:edit",
             kwargs={"event": event.slug, "page": page.slug},
-        ),
+        )
     )
     assert response.status_code == 404
 
@@ -138,7 +138,7 @@ def test_reviewer_cannot_delete_page(review_client, event, page):
         reverse(
             "plugins:pretalx_pages:delete",
             kwargs={"event": event.slug, "page": page.slug},
-        ),
+        )
     )
     assert response.status_code == 404
 
@@ -209,7 +209,7 @@ def test_reviewer_cannot_move_pages(review_client, event, page):
     response = review_client.get(
         reverse(
             "plugins:pretalx_pages:up", kwargs={"event": event.slug, "page": page.slug}
-        ),
+        )
     )
     assert response.status_code == 404
 
@@ -220,7 +220,7 @@ def test_move_nonexistent_page_404(orga_client, event):
         reverse(
             "plugins:pretalx_pages:up",
             kwargs={"event": event.slug, "page": "nonexistent"},
-        ),
+        )
     )
     assert response.status_code == 404
 
@@ -231,7 +231,7 @@ def test_public_page_view(client, event, page):
         reverse(
             "plugins:pretalx_pages:show",
             kwargs={"event": event.slug, "slug": page.slug},
-        ),
+        )
     )
     assert response.status_code == 200
     assert "Test Page" in response.content.decode()
@@ -243,7 +243,7 @@ def test_public_page_view_nonexistent(client, event):
     response = client.get(
         reverse(
             "plugins:pretalx_pages:show", kwargs={"event": event.slug, "slug": "nope"}
-        ),
+        )
     )
     assert response.status_code == 404
 
@@ -254,7 +254,7 @@ def test_public_page_view_case_insensitive(client, event, page):
         reverse(
             "plugins:pretalx_pages:show",
             kwargs={"event": event.slug, "slug": "Test-Page"},
-        ),
+        )
     )
     assert response.status_code == 200
 
