@@ -8,7 +8,7 @@
 | pretalx\_pages/apps.py         |       16 |        0 |        0 |        0 |    100% |           |
 | pretalx\_pages/models.py       |       17 |        0 |        0 |        0 |    100% |           |
 | pretalx\_pages/signals.py      |       34 |        0 |        6 |        0 |    100% |           |
-| pretalx\_pages/views.py        |      146 |        5 |       14 |        2 |     96% |117, 136-137, 186->193, 196-199 |
+| pretalx\_pages/views.py        |      146 |        5 |       14 |        2 |     96% |117, 136-137, 186-\>193, 196-199 |
 | **TOTAL**                      |  **214** |    **5** |   **20** |    **2** | **97%** |           |
 
 
