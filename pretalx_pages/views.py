@@ -1,6 +1,5 @@
-from functools import partial
+from functools import cache, partial
 
-import bleach
 from csp.decorators import csp_update
 from django import forms
 from django.contrib import messages
@@ -30,25 +29,33 @@ ALLOWED_ATTRIBUTES["a"] = ["href", "title", "target", "class"]
 ALLOWED_ATTRIBUTES["p"] = ["class"]
 ALLOWED_ATTRIBUTES["li"] = ["class"]
 ALLOWED_ATTRIBUTES["img"] = ["src", "title", "alt", "class"]
-CLEANER = bleach.Cleaner(
-    tags=rich_text.ALLOWED_TAGS
-    | {"img", "p", "br", "s", "sup", "sub", "u", "h3", "h4", "h5", "h6"},
-    attributes=ALLOWED_ATTRIBUTES,
-    protocols=rich_text.ALLOWED_PROTOCOLS | {"data"},
-    filters=[
-        partial(
-            bleach.linkifier.LinkifyFilter,
-            url_re=rich_text.TLD_REGEX,
-            parse_email=True,
-            email_re=rich_text.EMAIL_REGEX,
-            skip_tags={"pre", "code"},
-            callbacks=[
-                *bleach.linkifier.DEFAULT_CALLBACKS,
-                rich_text.safelink_callback,
-            ],
-        )
-    ],
-)
+
+
+@cache
+def _pages_cleaner():
+    """Lazy building because bleach is slow on import. """
+    import bleach  # noqa: PLC0415 -- slow import
+
+    url_re, email_re = rich_text.link_regexes()
+    return bleach.Cleaner(
+        tags=rich_text.ALLOWED_TAGS
+        | {"img", "p", "br", "s", "sup", "sub", "u", "h3", "h4", "h5", "h6"},
+        attributes=ALLOWED_ATTRIBUTES,
+        protocols=rich_text.ALLOWED_PROTOCOLS | {"data"},
+        filters=[
+            partial(
+                bleach.linkifier.LinkifyFilter,
+                url_re=url_re,
+                parse_email=True,
+                email_re=email_re,
+                skip_tags={"pre", "code"},
+                callbacks=[
+                    *bleach.linkifier.DEFAULT_CALLBACKS,
+                    rich_text.safelink_callback,
+                ],
+            )
+        ],
+    )
 
 
 class PageList(EventPermissionRequired, ListView):
@@ -249,5 +256,7 @@ class ShowPageView(TemplateView):
         ctx = super().get_context_data()
         page = self.get_page()
         ctx["page_title"] = page.title
-        ctx["content"] = CLEANER.clean(rich_text.md.reset().convert(str(page.text)))
+        ctx["content"] = _pages_cleaner().clean(
+            rich_text.markdown_engine().reset().convert(str(page.text))
+        )
         return ctx
