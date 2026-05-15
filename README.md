@@ -2,14 +2,14 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/pretalx/pretalx-pages/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                           |    Stmts |     Miss |   Branch |   BrPart |   Cover |   Missing |
-|------------------------------- | -------: | -------: | -------: | -------: | ------: | --------: |
-| pretalx\_pages/\_\_init\_\_.py |        1 |        0 |        0 |        0 |    100% |           |
-| pretalx\_pages/apps.py         |       16 |        0 |        0 |        0 |    100% |           |
-| pretalx\_pages/models.py       |       17 |        0 |        0 |        0 |    100% |           |
-| pretalx\_pages/signals.py      |       34 |        0 |        6 |        0 |    100% |           |
-| pretalx\_pages/views.py        |      146 |        5 |       14 |        2 |     96% |117, 136-137, 186-\>193, 196-199 |
-| **TOTAL**                      |  **214** |    **5** |   **20** |    **2** | **97%** |           |
+| Name                           |    Stmts |     Miss |   Branch |   BrPart |    Cover |   Missing |
+|------------------------------- | -------: | -------: | -------: | -------: | -------: | --------: |
+| pretalx\_pages/\_\_init\_\_.py |        1 |        0 |        0 |        0 |     100% |           |
+| pretalx\_pages/apps.py         |       16 |        0 |        0 |        0 |     100% |           |
+| pretalx\_pages/models.py       |       17 |        0 |        0 |        0 |     100% |           |
+| pretalx\_pages/signals.py      |       34 |        0 |        6 |        0 |     100% |           |
+| pretalx\_pages/views.py        |      149 |        0 |       14 |        0 |     100% |           |
+| **TOTAL**                      |  **217** |    **0** |   **20** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge
