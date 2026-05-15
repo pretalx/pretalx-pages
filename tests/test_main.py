@@ -355,6 +355,83 @@ def test_page_ordering(event):
 
 
 @pytest.mark.django_db
+def test_create_page_duplicate_slug(orga_client, event, page):
+    response = orga_client.post(
+        reverse("plugins:pretalx_pages:create", kwargs={"event": event.slug}),
+        {
+            "title_0": "Dup",
+            "slug": page.slug,
+            "text_0": "Duplicate slug",
+            "link_in_footer": "",
+        },
+    )
+    assert response.status_code == 200
+    with scopes_disabled():
+        assert Page.objects.filter(event=event).count() == 1
+
+
+@pytest.mark.django_db
+def test_edit_nonexistent_page_404(orga_client, event):
+    response = orga_client.get(
+        reverse(
+            "plugins:pretalx_pages:edit",
+            kwargs={"event": event.slug, "page": "nonexistent"},
+        )
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_delete_nonexistent_page_404(orga_client, event):
+    response = orga_client.post(
+        reverse(
+            "plugins:pretalx_pages:delete",
+            kwargs={"event": event.slug, "page": "nonexistent"},
+        )
+    )
+    assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_edit_page_without_changes(orga_client, event, page):
+    response = orga_client.post(
+        reverse(
+            "plugins:pretalx_pages:edit",
+            kwargs={"event": event.slug, "page": page.slug},
+        ),
+        {
+            "title_0": "Test Page",
+            "slug": page.slug,
+            "text_0": "This is a **test** page.",
+            "link_in_footer": "",
+        },
+        follow=True,
+    )
+    assert response.status_code == 200
+    with scopes_disabled():
+        assert (
+            not page.logged_actions()
+            .filter(action_type="pretalx_pages.page.changed")
+            .exists()
+        )
+
+
+@pytest.mark.django_db
+def test_edit_page_invalid(orga_client, event, page):
+    response = orga_client.post(
+        reverse(
+            "plugins:pretalx_pages:edit",
+            kwargs={"event": event.slug, "page": page.slug},
+        ),
+        {"title_0": "", "slug": page.slug, "text_0": "", "link_in_footer": ""},
+    )
+    assert response.status_code == 200
+    with scopes_disabled():
+        page.refresh_from_db()
+        assert str(page.title) == "Test Page"
+
+
+@pytest.mark.django_db
 def test_create_page_invalid_slug(orga_client, event):
     response = orga_client.post(
         reverse("plugins:pretalx_pages:create", kwargs={"event": event.slug}),
