@@ -33,7 +33,7 @@ ALLOWED_ATTRIBUTES["img"] = ["src", "title", "alt", "class"]
 
 @cache
 def _pages_cleaner():
-    """Lazy building because bleach is slow on import. """
+    """Lazy building because bleach is slow on import."""
     import bleach  # noqa: PLC0415 -- slow import
 
     url_re, email_re = rich_text.link_regexes()
@@ -111,7 +111,7 @@ def page_move_down(request, event, page):
 
 class PageForm(I18nModelForm):
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.get("event")
+        self.event = kwargs.pop("event", None)
         super().__init__(*args, **kwargs)
 
     class Meta:
@@ -171,6 +171,7 @@ class PageEditorMixin:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["locales"] = self.request.event.locales
+        kwargs["event"] = self.request.event
         return kwargs
 
 
