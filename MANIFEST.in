@@ -5,3 +5,4 @@ recursive-exclude assets *.png
 recursive-include pretalx_pages/locale *
 recursive-include pretalx_pages *.py
 include justfile
+include uv.lock
