@@ -1,14 +1,28 @@
 Static pages for pretalx
 ========================
 
-.. image:: https://raw.githubusercontent.com/pretalx/pretalx-pages/python-coverage-comment-action-data/badge.svg
-   :target: https://htmlpreview.github.io/?https://github.com/pretalx/pretalx-pages/blob/python-coverage-comment-action-data/htmlcov/index.html
-   :alt: Coverage
+.. image:: https://img.shields.io/pypi/v/pretalx-pages.svg
+   :target: https://pypi.org/project/pretalx-pages/
+   :alt: PyPI version
 
 This is a plugin for `pretalx`_ that allows you to add static pages to your
 event, for example FAQ, Terms of Service, a Code of Conduct, etc.
 
 |screenshots|
+
+Installation
+------------
+
+Install the plugin with pip, in the same environment as your pretalx
+installation::
+
+    (env)$ python -m pip install pretalx-pages
+
+Afterwards, run ``migrate`` and ``rebuild`` and restart your pretalx services,
+just like after any pretalx update (see `performing updates`_ in the
+administrator documentation).
+
+You can then enable the plugin under "Settings → Plugins" in your event settings.
 
 Development setup
 -----------------
@@ -67,5 +81,6 @@ Released under the terms of the Apache License 2.0
 .. _pretalx development setup: https://docs.pretalx.org/en/latest/developer/setup.html
 .. _just: https://just.systems/
 .. _uv: https://docs.astral.sh/uv/
+.. _performing updates: https://docs.pretalx.org/administrator/maintenance/#performing-updates
 .. |screenshots| image:: https://raw.githubusercontent.com/pretalx/pretalx-pages/master/assets/screenshots.png
    :alt: Screenshots of pretalx pages
