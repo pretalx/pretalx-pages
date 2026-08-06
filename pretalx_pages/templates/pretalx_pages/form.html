@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{% trans "Page" %}</h1>
+    <h2 class="page-heading">{% trans "Page" %}</h2>
     <form action="" method="post" class="form-horizontal" data-id="{{ page.id }}">
         {% csrf_token %}
         {% include "common/forms/errors.html" %}
