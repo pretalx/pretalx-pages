@@ -1,79 +1,28 @@
 {% extends "orga/base.html" %}
 
 {% load i18n %}
+{% load static %}
+{% load render_table from django_tables2 %}
 
 {% block extra_title %}{% trans "Pages" %} ::
 {% endblock %}
 
-{% block content %}
-    <h2 class="page-heading">{% trans "Pages" %}</h2>
-    {% if pages|length == 0 %}
-        <div class="empty-collection">
-            <p>
-                {% blocktrans trimmed %}
-                    You haven't created any pages yet.
-                {% endblocktrans %}
-            </p>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'orga/css/ui/dragsort.css' %}">
+{% endblock stylesheets %}
 
-            <a
-                href="{% url 'plugins:pretalx_pages:create' event=request.event.slug %}"
-                class="btn btn-primary btn-lg"
-            ><i class="fa fa-plus"></i> {% trans "Create a new page" %}</a>
-        </div>
-    {% else %}
-        <p>
-            <a href="{% url 'plugins:pretalx_pages:create' event=request.event.slug %}" class="btn btn-primary"><i
-                    class="fa fa-plus"
-                ></i> {% trans "Create a new page" %}
-            </a>
-        </p>
-        <div class="table-responsive">
-            <table class="table table-flip">
-                <thead>
-                    <tr>
-                        <th>{% trans "Page title" %}</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in pages %}
-                        <tr>
-                            <td>
-                                <strong><a
-                                        href="{% url 'plugins:pretalx_pages:edit' event=request.event.slug page=p.slug %}"
-                                    >{{ p.title }}</a></strong>
-                            </td>
-                            <td class="text-right flip">
-                                <a
-                                    href="{% url 'plugins:pretalx_pages:up' event=request.event.slug page=p.slug %}"
-                                    class="btn btn-info btn-sm {% if forloop.counter0 == 0 %}disabled{% endif %}"
-                                ><i class="fa fa-arrow-up"></i></a>
-                                <a
-                                    href="{% url 'plugins:pretalx_pages:down' event=request.event.slug page=p.slug %}"
-                                    class="btn btn-info btn-sm {% if forloop.revcounter0 == 0 %}disabled{% endif %}"
-                                ><i class="fa fa-arrow-down"></i></a>
-                            </td>
-                            <td class="text-right flip">
-                                <a
-                                    href="{% url 'plugins:pretalx_pages:show' event=request.event.slug slug=p.slug %}"
-                                    class="btn btn-success btn-sm"
-                                    target="_blank"
-                                ><i class="fa fa-eye"></i></a>
-                                <a
-                                    href="{% url 'plugins:pretalx_pages:edit' event=request.event.slug page=p.slug %}"
-                                    class="btn btn-info btn-sm"
-                                ><i class="fa fa-edit"></i></a>
-                                <a
-                                    href="{% url 'plugins:pretalx_pages:delete' event=request.event.slug page=p.slug %}"
-                                    class="btn btn-danger btn-sm"
-                                ><i class="fa fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% include "common/includes/pagination.html" %}
-    {% endif %}
+{% block scripts %}
+    <script defer src="{% static 'orga/js/ui/dragsort.js' %}"></script>
+{% endblock scripts %}
+
+{% block content %}
+    {% #page_heading %}
+    {% trans "Pages" %}
+    {% #slot buttons %}
+    <a class="btn btn-primary" href="{% url 'plugins:pretalx_pages:create' event=request.event.slug %}">
+        {% trans "Create a new page" %}
+    </a>
+    {% /slot %}
+    {% /page_heading %}
+    {% render_table table %}
 {% endblock %}

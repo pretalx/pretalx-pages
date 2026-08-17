@@ -20,9 +20,16 @@ from django.views.generic import (
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.templatetags import rich_text
-from pretalx.common.views.mixins import EventPermissionRequired
+from pretalx.common.views.generic import OrgaTableMixin
+from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
+    EventPermissionRequired,
+    reorder_queryset,
+)
+from pretalx.common.views.redirect import get_next_url
 
 from .models import Page
+from .tables import PageTable
 
 ALLOWED_ATTRIBUTES = dict(rich_text.ALLOWED_ATTRIBUTES)
 ALLOWED_ATTRIBUTES["a"] = ["href", "title", "target", "class"]
@@ -58,15 +65,26 @@ def _pages_cleaner():
     )
 
 
-class PageList(EventPermissionRequired, ListView):
+class PageList(EventPermissionRequired, OrgaTableMixin, ListView):
     model = Page
     context_object_name = "pages"
-    paginate_by = 20
+    table_class = PageTable
     template_name = "pretalx_pages/index.html"
     permission_required = "event.update_event"
 
     def get_queryset(self):
-        return Page.objects.filter(event=self.request.event)
+        return Page.objects.filter(event=self.request.event).select_related("event")
+
+    def get_table_kwargs(self):
+        kwargs = super().get_table_kwargs()
+        kwargs["has_update_permission"] = True
+        kwargs["has_delete_permission"] = True
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        if order := request.POST.get("order"):
+            reorder_queryset(self.get_queryset(), order.split(","))
+        return self.get(request, *args, **kwargs)
 
 
 def page_move(request, page, up=True):
