@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
     CreateView,
-    DeleteView,
+    DetailView,
     ListView,
     TemplateView,
     UpdateView,
@@ -149,12 +149,19 @@ class PageDetailMixin:
         )
 
 
-class PageDelete(EventPermissionRequired, PageDetailMixin, DeleteView):
+class PageDelete(
+    EventPermissionRequired, PageDetailMixin, ActionConfirmMixin, DetailView
+):
     model = Page
-    form_class = PageForm
-    template_name = "pretalx_pages/delete.html"
-    context_object_name = "page"
     permission_required = "event.update_event"
+
+    @property
+    def action_object_name(self):
+        return self.get_object().title
+
+    @property
+    def action_back_url(self):
+        return get_next_url(self.request) or self.get_success_url()
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
