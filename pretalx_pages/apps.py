@@ -17,7 +17,6 @@ class PluginApp(AppConfig):
         visible = True
         version = __version__
         category = "FEATURE"
-        settings_links = [(gettext_lazy("Pages"), "plugins:pretalx_pages:index", {})]
         navigation_links = [(gettext_lazy("Pages"), "plugins:pretalx_pages:index", {})]
 
     def ready(self):
