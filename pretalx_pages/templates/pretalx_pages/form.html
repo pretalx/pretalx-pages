@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+{% load form_errors %}
 {% load i18n %}
 
 {% block extra_title %}{% trans "Page" %} ::
@@ -8,7 +9,7 @@
     <h2 class="page-heading">{% trans "Page" %}</h2>
     <form action="" method="post" class="form-horizontal" data-id="{{ page.id }}">
         {% csrf_token %}
-        {% include "common/forms/errors.html" %}
+        {% form_errors form %}
         <fieldset>
             <legend>{% trans "General information" %}</legend>
             {{ form.title.as_field_group }}
