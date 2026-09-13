@@ -239,6 +239,28 @@ def test_public_page_view(client, event, page):
 
 
 @pytest.mark.django_db
+def test_public_page_view_fediverse_handle(client, event):
+    with scopes_disabled():
+        Page.objects.create(
+            event=event,
+            slug="fedi-page",
+            position=0,
+            title="Fedi Page",
+            text="Follow @pretalxdemo@chaos.social for news.",
+        )
+    response = client.get(
+        reverse(
+            "plugins:pretalx_pages:show",
+            kwargs={"event": event.slug, "slug": "fedi-page"},
+        )
+    )
+    assert response.status_code == 200
+    content = response.content.decode()
+    assert ">@pretalxdemo@chaos.social</a>" in content
+    assert "mailto:pretalxdemo@chaos.social" not in content
+
+
+@pytest.mark.django_db
 def test_public_page_view_nonexistent(client, event):
     response = client.get(
         reverse(
