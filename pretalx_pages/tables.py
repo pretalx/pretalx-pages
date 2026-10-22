@@ -40,4 +40,3 @@ class PageTable(DragsortTable):
     class Meta:
         model = Page
         fields = ("title", "actions")
-        empty_text = _("You haven't created any pages yet.")
