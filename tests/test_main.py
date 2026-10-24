@@ -92,7 +92,15 @@ def test_orga_can_edit_page(orga_client, event, page):
 
 
 @pytest.mark.django_db
-def test_orga_can_delete_page(orga_client, event, page):
+@pytest.mark.parametrize(
+    ("next_url", "follows_next"),
+    (
+        (None, False),
+        ("/orga/event/{slug}/pages/?page=2", True),
+        ("https://evil.example.com/", False),
+    ),
+)
+def test_orga_can_delete_page(orga_client, event, page, next_url, follows_next):
     response = orga_client.get(
         reverse(
             "plugins:pretalx_pages:delete",
@@ -100,15 +108,22 @@ def test_orga_can_delete_page(orga_client, event, page):
         )
     )
     assert response.status_code == 200
+    if next_url:
+        next_url = next_url.format(slug=event.slug)
 
     response = orga_client.post(
         reverse(
             "plugins:pretalx_pages:delete",
             kwargs={"event": event.slug, "page": page.slug},
         ),
-        follow=True,
+        query_params={"next": next_url} if next_url else None,
     )
-    assert response.status_code == 200
+    assert response.status_code == 302
+    assert response.url == (
+        next_url
+        if follows_next
+        else reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug})
+    )
     with scopes_disabled():
         assert not Page.objects.filter(event=event, slug="test-page").exists()
 

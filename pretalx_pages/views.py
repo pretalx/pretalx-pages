@@ -180,7 +180,7 @@ class PageDelete(
         )
         self.object.delete()
         messages.success(request, _("The selected page has been deleted."))
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(self.action_back_url)
 
 
 class PageEditorMixin:
