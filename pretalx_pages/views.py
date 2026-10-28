@@ -64,7 +64,11 @@ class PageList(EventPermissionRequired, OrgaTableMixin, ListView):
     permission_required = "event.update_event"
 
     def get_queryset(self):
-        return Page.objects.filter(event=self.request.event).select_related("event")
+        return (
+            Page.objects.filter(event=self.request.event)
+            .select_related("event")
+            .order_by("position", "title", "pk")
+        )
 
     def get_table_kwargs(self):
         kwargs = super().get_table_kwargs()
