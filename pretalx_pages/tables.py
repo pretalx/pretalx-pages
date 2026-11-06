@@ -16,6 +16,7 @@ def _page_url(name, record):
 
 class PageTable(DragsortTable):
     primary_column = "title"
+    default_columns = ("title",)
 
     title = tables.Column(linkify=lambda record: _page_url("edit", record))
     actions = ActionsColumn(
