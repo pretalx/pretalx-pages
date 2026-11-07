@@ -1,6 +1,12 @@
+import csv
+import io
+
 import pytest
 from django.urls import reverse
 from django_scopes import scopes_disabled
+
+from pretalx.common.tables.export import get_exportable_tables, render_export
+from pretalx.event.domain.plugins import disable_plugin
 
 from pretalx_pages.models import Page
 from pretalx_pages.signals import (
@@ -10,6 +16,7 @@ from pretalx_pages.signals import (
     pretalx_activitylog_object_link,
     show_pages_to_orgnisers,
 )
+from pretalx_pages.tables import PageTable
 
 
 @pytest.mark.django_db
@@ -477,3 +484,52 @@ def test_create_page_invalid_slug(orga_client, event):
     assert response.status_code == 200
     with scopes_disabled():
         assert Page.objects.filter(event=event).count() == 0
+
+
+@pytest.mark.django_db
+def test_page_table_exportable_only_with_plugin_enabled(event):
+    assert get_exportable_tables(event)["PageTable"] is PageTable
+
+    with scopes_disabled():
+        disable_plugin(event, "pretalx_pages")
+
+    assert "PageTable" not in get_exportable_tables(event)
+
+
+@pytest.mark.django_db
+def test_page_export_renders_csv(event, orga_user, page, footer_page):
+    output = io.BytesIO()
+    render_export(
+        event,
+        orga_user,
+        {
+            "table": "PageTable",
+            "columns": ["title", "slug", "position", "link_in_footer", "text"],
+            "ordering": [],
+            "filters": {},
+            "serializer": "csv",
+            "serializer_options": {},
+        },
+        output,
+    )
+
+    rows = list(csv.reader(io.StringIO(output.getvalue().decode("utf-8-sig"))))
+    assert rows == [
+        [
+            "ID",
+            "Page title",
+            "URL to static page",
+            "Position",
+            "Show link in the event footer",
+            "Page content",
+        ],
+        [str(page.pk), "Test Page", "test-page", "0", "No", "This is a **test** page."],
+        [
+            str(footer_page.pk),
+            "Footer Page",
+            "footer-page",
+            "1",
+            "Yes",
+            "This page shows in the footer.",
+        ],
+    ]

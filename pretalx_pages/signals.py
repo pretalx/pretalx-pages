@@ -4,11 +4,16 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.cfp.signals import footer_link
-from pretalx.common.signals import activitylog_display, activitylog_object_link
+from pretalx.common.signals import (
+    activitylog_display,
+    activitylog_object_link,
+    register_exportable_tables,
+)
 from pretalx.common.urls import build_absolute_uri
 from pretalx.orga.signals import event_copy_data, nav_event
 
 from .models import Page
+from .tables import PageTable
 
 
 @receiver(nav_event)
@@ -73,3 +78,8 @@ def footer_link_pages(sender, request=None, **kwargs):
         }
         for page in Page.objects.filter(event=sender, link_in_footer=True)
     ]
+
+
+@receiver(register_exportable_tables, dispatch_uid="pages_exportable_tables")
+def register_page_exportable_tables(sender, **kwargs):
+    return [PageTable]
