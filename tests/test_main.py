@@ -5,6 +5,7 @@ import pytest
 from django.urls import reverse
 from django_scopes import scopes_disabled
 
+from pretalx.common.models.exports import TableExport
 from pretalx.common.tables.export import get_exportable_tables, render_export
 from pretalx.event.domain.plugins import disable_plugin
 
@@ -533,3 +534,26 @@ def test_page_export_renders_csv(event, orga_user, page, footer_page):
             "This page shows in the footer.",
         ],
     ]
+
+
+@pytest.mark.django_db
+def test_page_export_view_data_redirects_to_page_list(orga_client, event, page):
+    with scopes_disabled():
+        export = TableExport.objects.create(
+            event=event,
+            name="Footer pages",
+            table="PageTable",
+            ordering=["-slug"],
+            serializer="csv",
+        )
+
+    response = orga_client.get(export.view_data_url, follow=True)
+
+    assert response.redirect_chain == [
+        (
+            reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug})
+            + "?sort=-slug",
+            302,
+        )
+    ]
+    assert list(response.context["table"].data.data) == [page]

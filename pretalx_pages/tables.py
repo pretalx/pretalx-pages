@@ -44,11 +44,15 @@ class PageTable(DragsortTable):
     )
 
     @classmethod
+    def get_list_url(cls, event):
+        return reverse("plugins:pretalx_pages:index", kwargs={"event": event.slug})
+
+    @classmethod
     def base_queryset(cls, event, user):
         return event.pages.all()
 
     def get_dragsort_url(self):
-        return reverse("plugins:pretalx_pages:index", kwargs={"event": self.event.slug})
+        return self.get_list_url(self.event)
 
     class Meta:
         model = Page
